@@ -1,6 +1,11 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info("Helloi From Mario's DAG")
+
 
 # Define default_args
 default_args = {
