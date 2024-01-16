@@ -7,6 +7,10 @@ import math
 from typing import List,Union,Any,Dict,OrderedDict
 from datetime import datetime
 from collections import namedtuple
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info("Helloi From Mario's DAG")
 
 # Marshall to known type
 AllocateCandidate = namedtuple("AllocateCandidate", "id measure metadata")
