@@ -10,7 +10,7 @@ import sys
 from airflow import DAG
 from airflow.decorators import task
 from brompton.WorkerAllocator import *
-
+from brompton import AllocateCandidate, allocate
 def calculate(a,b,expr):
     return eval(expr)
 

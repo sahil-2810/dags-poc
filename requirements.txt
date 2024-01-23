@@ -1,0 +1,5 @@
+pendulum
+pandas
+requests
+apache-airflow
+redis
