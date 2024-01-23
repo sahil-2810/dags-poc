@@ -1,40 +1,19 @@
+import json
+import math
+import time
 import pendulum
+import json
 import pandas as pd
+import requests
+import redis
+import sys
 from airflow import DAG
 from airflow.decorators import task
-import random
-import math
-from typing import List,Union,Any,Dict,OrderedDict
-from datetime import datetime
-from collections import namedtuple
-import logging
-
-logger = logging.getLogger(__name__)
-logger.info("Helloi From Mario's DAG")
-
-# Marshall to known type
-AllocateCandidate = namedtuple("AllocateCandidate", "id measure metadata")
-
-def allocate(items:List[AllocateCandidate], max_workers=10, max_items_per_worker=120)\
-        -> List[List[Union[Dict[str, Any], OrderedDict[str, Any]]]]:  # [[AllocateCandidate as OrderedDict for the benefit of airflow]]
-    items.sort(key=lambda i: i.measure) # prioritize by measure ascending
-    total_items=len(items)
-    total_cnt = 0
-    worker_cnt = 0
-    allocated_items=[]
-    target_items=min(total_items, (max_workers * max_items_per_worker))
-    start=0
-    while(total_cnt<target_items and worker_cnt<max_workers):
-        end=min(start+max_items_per_worker,total_items)
-        worker_items=items[start:end]
-        allocated_items.append([item._asdict() for item in worker_items])  # convert to dictionary for airflow's benefit
-        total_cnt += len(worker_items)
-        worker_cnt+=1
-        start = end
-    return allocated_items
+from brompton.WorkerAllocator import *
 
 def calculate(a,b,expr):
     return eval(expr)
+
 def generate_test_calcs(n: int, divisor: int):
     if (n < 2):
         n = 2
@@ -49,14 +28,12 @@ def generate_test_calcs(n: int, divisor: int):
         ret.append(item)
     return ret
 
-# TODO: this can be moved to config variables so that it can be controller
-n = 10  # max number of calcs to do
-m = 2  # calcs per worker
-
+n = 200  # max number of calcs to do
+m = 20  # calcs per worker
 d = 3 # minimum fraction divisor
 
 with DAG(
-        dag_id="worker_allocator_test_simple_v1",
+        dag_id="worker_allocator_test_new",
         schedule_interval="*/2 * * * *",
         start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
         catchup=False,
