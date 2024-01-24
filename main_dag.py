@@ -3,6 +3,7 @@ from brompton.tasks import *
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+sys.path.insert(0, "./brompton")
 
 # Define default_args dictionary to specify the DAG's default parameters
 default_args = {
