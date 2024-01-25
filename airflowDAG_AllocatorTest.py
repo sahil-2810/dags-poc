@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 import redis
 import sys
-sys.path.append('/opt/bitnami/airflow/dags/brompton/')
+# sys.path.append('/opt/bitnami/airflow/dags/brompton/')
 from airflow import DAG
 from airflow.decorators import task
 from brompton.WorkerAllocator import *
