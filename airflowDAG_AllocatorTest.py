@@ -7,12 +7,13 @@ import pandas as pd
 import requests
 import redis
 import sys
+sys.path.append('/opt/bitnami/airflow/dags/brompton/')
 from airflow import DAG
 from airflow.decorators import task
 from brompton.WorkerAllocator import *
 from brompton import AllocateCandidate, allocate
-
-sys.path.insert(0, "./brompton")
+#
+# sys.path.insert(0, "./brompton")
 
 
 def calculate(a, b, expr):
