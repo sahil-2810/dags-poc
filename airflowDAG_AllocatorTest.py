@@ -2,7 +2,7 @@ import math
 import pendulum
 import pandas as pd
 import sys
-sys.path.append("/opt/bitnami/airflow/dags/git_github-com-sahil-2810-dags-poc/brompton/WorkerAllocator")
+sys.path.append('/opt/bitnami/airflow/dags/git_github-com-sahil-2810-dags-poc/')
 from airflow import DAG as DAG
 from airflow.decorators import task
 from brompton.WorkerAllocator import allocate, AllocateCandidate
