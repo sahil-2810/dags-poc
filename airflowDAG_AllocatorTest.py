@@ -1,19 +1,11 @@
-import json
 import math
-import time
 import pendulum
-import json
 import pandas as pd
-import requests
-import redis
 import sys
-# sys.path.append('/opt/bitnami/airflow/dags/brompton/')
-from airflow import DAG
+sys.path.append('/opt/bitnami/airflow/brompton/')
+from airflow import DAG as DAG
 from airflow.decorators import task
-from brompton.WorkerAllocator import *
-from brompton import AllocateCandidate, allocate
-#
-# sys.path.insert(0, "./brompton")
+from brompton.WorkerAllocator import allocate, AllocateCandidate
 
 
 def calculate(a, b, expr):
@@ -41,7 +33,7 @@ m = 20  # calcs per worker
 d = 3  # minimum fraction divisor
 
 with DAG(
-        dag_id="worker_allocator_test_new",
+        dag_id="worker_allocator_test_new_v1",
         schedule_interval="*/2 * * * *",
         start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
         catchup=False,
