@@ -61,14 +61,14 @@ with DAG(
     async def report_results(calc_results: List[List[Any]]):
         for calc in calc_results:
             print(f"Calculation {calc[0]}, with sort value {calc[1]}, consisting of expression {calc[4]} with inputs a={calc[2]} and b={calc[3]} has result {calc[5]}")
-        sentinel = Sentinel([("redis", 26379)],sentinel_kwargs={'password': 'test@123'}, password='test@123')
-        r = sentinel.master_for("mymaster")
-        # print(await sentinel.discover_master("mymaster"))
-        # print(sentinel)
-        # print(r)
-        ok = await r.set("key", "value123")
-        val = await r.get("key")
-        print(val)
+        # sentinel = Sentinel([("redis", 26379)],sentinel_kwargs={'password': 'test@123'}, password='test@123')
+        # r = sentinel.master_for("mymaster")
+        # # print(await sentinel.discover_master("mymaster"))
+        # # print(sentinel)
+        # # print(r)
+        # ok = await r.set("key", "value123")
+        # val = await r.get("key")
+        # print(val)
     # Main flow
     allocated = allocate_workers()
     calc_results=execute_calculations.expand(allocated_calc_instances=allocated)
