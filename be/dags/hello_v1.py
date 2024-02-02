@@ -1,7 +1,8 @@
 # your_dag_file.py
 
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import PythonOperator
+from be.brompton import print_hello
 from datetime import datetime
 
 default_args = {
@@ -17,11 +18,14 @@ dag = DAG(
     schedule_interval='@daily',
 )
 
-hello_task = BashOperator(
-    task_id='hello_task',
-    bash_command='bash /opt/bitnami/airflow/dags/brompton/hello.sh',  # Replace with the correct path
-    dag=dag,
-)
+def hello_world_task(**kwargs):
+    print_hello()
+
+with dag:
+    hello_task = PythonOperator(
+        task_id='hello_task',
+        python_callable=hello_world_task,
+    )
 
 if __name__ == "__main__":
     dag.cli()

@@ -1,15 +1,10 @@
-import json
 import math
-import time
 import pendulum
-import json
 import pandas as pd
-import requests
-import redis
-import sys
 from airflow import DAG
 from airflow.decorators import task
-from brompton.WorkerAllocator import *
+from be.brompton.WorkerAllocator import *
+
 
 def calculate(a,b,expr):
     return eval(expr)
