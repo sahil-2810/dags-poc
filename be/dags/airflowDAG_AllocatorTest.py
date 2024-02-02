@@ -10,7 +10,7 @@ import sys
 from redis.asyncio.sentinel import Sentinel
 from airflow import DAG
 from airflow.decorators import task
-from brompton.WorkerAllocator import *
+from be.brompton.WorkerAllocator import *
 
 def calculate(a,b,expr):
     return eval(expr)
