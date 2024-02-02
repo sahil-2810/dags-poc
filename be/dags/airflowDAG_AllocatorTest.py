@@ -70,10 +70,7 @@ with DAG(
 
 async def __get_connection__(self):
         
-    sentinel = Sentinel(sentinels=[('redis-s0', 26379),
-            ('redis-s1', 26379),
-            ('redis-s2', 26379)
-            ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+    sentinel = Sentinel(sentinels=[('redis', 26379)],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
     return sentinel.master_for('mymaster')
     #return redis.Redis(host=self.__host__, port=self.__port__)
 
