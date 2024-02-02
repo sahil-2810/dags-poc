@@ -1,10 +1,16 @@
+import json
 import math
+import time
 import pendulum
+import json
 import pandas as pd
+import requests
+import redis
+import sys
+from redis.asyncio.sentinel import Sentinel
 from airflow import DAG
 from airflow.decorators import task
-from be.brompton.WorkerAllocator import *
-
+from brompton.WorkerAllocator import *
 
 def calculate(a,b,expr):
     return eval(expr)
@@ -52,15 +58,24 @@ with DAG(
         return df.values.tolist()
 
     @task
-    def report_results(calc_results: List[List[Any]]):
+    async def report_results(calc_results: List[List[Any]]):
         for calc in calc_results:
             print(f"Calculation {calc[0]}, with sort value {calc[1]}, consisting of expression {calc[4]} with inputs a={calc[2]} and b={calc[3]} has result {calc[5]}")
-
+            async with await self.__get_connection__() as conn:
+                    conn.set("xxxxx"+calc[2]+ calc[3], calc[4])
     # Main flow
     allocated = allocate_workers()
     calc_results=execute_calculations.expand(allocated_calc_instances=allocated)
     report_results.expand(calc_results=calc_results)
 
+async def __get_connection__(self):
+        
+    sentinel = Sentinel(sentinels=[('redis-s0', 26379),
+            ('redis-s1', 26379),
+            ('redis-s2', 26379)
+            ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+    return sentinel.master_for('mymaster')
+    #return redis.Redis(host=self.__host__, port=self.__port__)
 
 
 
