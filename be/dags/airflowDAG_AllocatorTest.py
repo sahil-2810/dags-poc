@@ -7,7 +7,6 @@ import pandas as pd
 import requests
 import redis
 import sys
-from redis.asyncio.sentinel import Sentinel
 from airflow import DAG
 from airflow.decorators import task
 from be.brompton.WorkerAllocator import *
