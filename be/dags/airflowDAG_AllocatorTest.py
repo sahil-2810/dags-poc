@@ -59,16 +59,20 @@ with DAG(
         return df.values.tolist()
 
     @task
-    def report_results(calc_results: List[List[Any]]):
+    async def report_results(calc_results: List[List[Any]]):
         for calc in calc_results:
             print(f"Calculation {calc[0]}, with sort value {calc[1]}, consisting of expression {calc[4]} with inputs a={calc[2]} and b={calc[3]} has result {calc[5]}")
         sentinel = Sentinel([("redis-service", 26379)],sentinel_kwargs={'password': 'test@123'},password='test@123')
         r = sentinel.master_for("mymaster")
-        ts_ktv = []
-        with r.pipeline(transaction=False) as pipe:
-            ts_ktv.append(("value456","value666"))
-            pipe.ts().madd(ts_ktv)
-            results = pipe.execute(raise_on_error=False)
+        ok = await r.set("key", "value111")
+        val = await r.get("key")
+        print(val)
+
+        # ts_ktv = []
+        # with r.pipeline(transaction=False) as pipe:
+        #     ts_ktv.append(("value456","value666"))
+        #     pipe.ts().madd(ts_ktv)
+        #     results = pipe.execute(raise_on_error=False)
 
 
     # Main flow
