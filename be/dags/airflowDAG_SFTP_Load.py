@@ -132,10 +132,10 @@ with DAG(
         # Connect to redis for each file block
         print(f"Redis Python API version: {redis.__version__}")
         # TODO: Move to variables.  Also secure.
-        sentinel = Sentinel(sentinels=[('redis-service', 26379),
-               ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
-        conn = sentinel.master_for('mymaster')
-        #conn=redis.Redis(host="192.168.8.184", port=6379)
+        # sentinel = Sentinel(sentinels=[('redis-service', 26379),
+        #        ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+        # conn = sentinel.master_for('mymaster')
+        conn=redis.Redis(host="redis-service", port=26379)
         key_types={}              
         for asset_files in file_block:
             asset=asset_files['asset']
