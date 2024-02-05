@@ -7,8 +7,8 @@ from airflow import DAG
 from airflow.decorators import task
 from airflow.providers.sftp.hooks.sftp import SFTPHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from brompton.AssetFileWorkerAllocator import allocate
-from brompton.SymbolToIDMapping import get_maps_from_db
+from be.brompton.AssetFileWorkerAllocator import allocate
+from be.brompton.SymbolToIDMapping import get_maps_from_db
 
 import pendulum
 
