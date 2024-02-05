@@ -135,7 +135,7 @@ with DAG(
         # sentinel = Sentinel(sentinels=[('redis-service', 26379),
         #        ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
         # conn = sentinel.master_for('mymaster')
-        conn=redis.Redis(host="redis-service", port=26379)
+        conn=redis.Redis(host="redis-service", port=6379)
         key_types={}              
         for asset_files in file_block:
             asset=asset_files['asset']
