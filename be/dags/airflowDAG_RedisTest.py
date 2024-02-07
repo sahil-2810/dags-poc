@@ -25,7 +25,7 @@ with DAG(
         conn = sentinel.master_for('mymaster')
         #Discover Slaves
         slave = sentinel.slave_for('mymaster', socket_timeout=10)
-        print("Slaves are: " + slave)
+        # print("Slaves are: " + slave)
         #conn=redis.Redis(connection_pool=pool)
         # Create key if no exist
         try:
