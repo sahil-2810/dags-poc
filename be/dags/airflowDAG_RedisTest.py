@@ -17,7 +17,7 @@ with DAG(
         max_active_runs=10
 ) as dag:
     @task
-    def write_to_redis(pool):
+    def write_to_redis():
         ts=round(datetime.now().timestamp()*1000)
         #Discover Master
         sentinel = Sentinel(sentinels=[('redis-service', 26379),
@@ -44,8 +44,8 @@ with DAG(
         conn.ts().add(redis_key,ts,val)
 
     # Main flow
-    pool = redis.ConnectionPool(host="redis-service", port=26379, db=0, password="test@123")
-    write_to_redis(pool)
+    #pool = redis.ConnectionPool(host="redis-service", port=6379, db=0, password="test@123")
+    write_to_redis()
 
 
 
