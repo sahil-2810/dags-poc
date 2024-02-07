@@ -2,7 +2,8 @@ import sys
 
 from typing import List,Dict
 import redis
-from redis.asyncio.sentinel import Sentinel
+# from redis.asyncio.sentinel import Sentinel
+from redis.sentinel import Sentinel
 from airflow import DAG
 from airflow.decorators import task
 from airflow.providers.sftp.hooks.sftp import SFTPHook
@@ -132,10 +133,12 @@ with DAG(
         # Connect to redis for each file block
         print(f"Redis Python API version: {redis.__version__}")
         # TODO: Move to variables.  Also secure.
-        # sentinel = Sentinel(sentinels=[('redis-service', 26379),
-        #        ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
-        # conn = sentinel.master_for('mymaster')
-        conn=redis.Redis(host="redis-service", port=6379,password='test@123')
+        sentinel = Sentinel(sentinels=[('redis-service', 26379),
+               ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+        conn = sentinel.master_for('mymaster')
+        #Discover Slaves
+        slave = sentinel.slave_for('mymaster', socket_timeout=10)
+        #conn=redis.Redis(host="redis-service", port=26379,password='test@123')
         key_types={}              
         for asset_files in file_block:
             asset=asset_files['asset']
