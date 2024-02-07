@@ -36,7 +36,7 @@ with DAG(
         conn.ts().add(redis_key,ts,val)
 
     # Main flow
-    pool = redis.ConnectionPool(host="redis-service", port=6379, db=0, password="test@123")
+    pool = redis.ConnectionPool(host="redis-service", port=26379, db=0, password="test@123")
     write_to_redis(pool)
 
 
