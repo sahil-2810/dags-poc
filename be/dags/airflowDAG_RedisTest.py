@@ -4,6 +4,7 @@ from airflow.decorators import task
 import random
 from datetime import datetime
 import redis
+from redis.sentinel import Sentinel
 
 redis_key = "write_test_666"
 
@@ -18,7 +19,14 @@ with DAG(
     @task
     def write_to_redis(pool):
         ts=round(datetime.now().timestamp()*1000)
-        conn=redis.Redis(connection_pool=pool)
+        #Discover Master
+        sentinel = Sentinel(sentinels=[('redis-service', 26379),
+               ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+        conn = sentinel.master_for('mymaster')
+        #Discover Slaves
+        slave = sentinel.slave_for('mymaster', socket_timeout=10)
+        print("Slaves are: " + slave)
+        #conn=redis.Redis(connection_pool=pool)
         # Create key if no exist
         try:
             info=conn.ts().info(redis_key)
