@@ -2,8 +2,8 @@ import sys
 
 from typing import List,Dict
 import redis
-# from redis.asyncio.sentinel import Sentinel
-from redis.sentinel import Sentinel
+from redis.asyncio.sentinel import Sentinel
+# from redis.sentinel import Sentinel
 from airflow import DAG
 from airflow.decorators import task
 from airflow.providers.sftp.hooks.sftp import SFTPHook
@@ -33,7 +33,7 @@ with DAG(
 ) as dag:
 
     @task()
-    def allocate_workers(file_pattern,max_workers=10,max_files_per_worker=120,max_files_per_asset=10) -> List[list]:  # [[{asset->filemanes}]]
+    def allocate_workers(file_pattern,max_workers=20,max_files_per_worker=120,max_files_per_asset=20) -> List[list]:  # [[{asset->filemanes}]]
         """
         #### Extract task
         Get files in order of modification and pass them to downstream 
