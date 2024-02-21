@@ -2,8 +2,8 @@ import sys
 
 from typing import List,Dict
 import redis
-from redis.asyncio.sentinel import Sentinel
-# from redis.sentinel import Sentinel
+# from redis.asyncio.sentinel import Sentinel
+from redis.sentinel import Sentinel
 from airflow import DAG
 from airflow.decorators import task
 from airflow.providers.sftp.hooks.sftp import SFTPHook
