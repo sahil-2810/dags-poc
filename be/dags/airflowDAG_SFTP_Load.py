@@ -159,7 +159,7 @@ with DAG(
                                 key_types[k]=conn.type(k).decode('utf-8')
                             if(key_types[k]=='TSDB-TYPE'):
                                 ts_params=[k,time,float(v)]
-                                pipe.ts().add(*ts_params)
+                                pipe.ts().add(*ts_params,duplicate_policy="LAST")
                             else:
                                 stream_params=[k,{"value":str(v)},f"{time}-0"]
                                 pipe.xadd(*stream_params)
