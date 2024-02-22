@@ -160,9 +160,11 @@ with DAG(
                             if(key_types[k]=='TSDB-TYPE'):
                                 ts_params=[k,time,float(v)]
                                 pipe.ts().add(*ts_params,duplicate_policy="LAST")
+                                print(f"TSDB Type {k}:{v}")
                             else:
                                 stream_params=[k,{"value":str(v)},f"{time}-0"]
                                 pipe.xadd(*stream_params)
+                                print(f"Not TSDB Type {k}:{v}")
                     # Send to redis entire file
                     try:
                         pipe.execute()
