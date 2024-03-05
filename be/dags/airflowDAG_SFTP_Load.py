@@ -25,7 +25,7 @@ def sftp_exists(sftp, path):
 # Schedule every n minutes
 with DAG(
     dag_id="sftp_etl",
-    schedule_interval="*/6 * * * *",
+    schedule_interval="*/2 * * * *",
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
     tags=["sftp"],
