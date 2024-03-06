@@ -13,6 +13,13 @@ from be.brompton.SymbolToIDMapping import get_maps_from_db
 import pendulum
 import paramiko
 
+default_args = {
+    'owner': 'airflow',
+    'start_date': datetime(2021, 1, 1),
+    'email': ['sahilg@argtechnologies.in'],
+    'email_on_failure': True,
+}
+
 # Notification function for task failure
 def send_failure_status_email(context):
     task_instance = context['task_instance']
@@ -23,7 +30,7 @@ def send_failure_status_email(context):
            f"Task execution date: {context['execution_date']}\n" \
            f"Log URL: {task_instance.log_url}\n\n"
 
-    to_email = "sgupta@bromptonenergy.com"  # Replace with the recipient email address
+    to_email = "sahilg@argtechnologies.in"  # Replace with the recipient email address
     send_email(to=to_email, subject=subject, html_content=body)
 
 # Helper function to check if SFTP file exists
@@ -37,7 +44,7 @@ def sftp_exists(sftp, path):
 # DAG definition
 with DAG(
     dag_id="sftp_etl_notification",
-    schedule_interval="*/6 * * * *",
+    schedule_interval="*/1 * * * *",
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
     tags=["sftp"],
@@ -91,7 +98,7 @@ with DAG(
 
         # TODO: handle common connection
         file_blocks=[]        
-        hook=SFTPHook("staged_files_sftp")
+        hook=SFTPHook("staged_files_sftp_notification")
         with hook.get_conn() as sftp:
             for asset_file_block in asset_files:
                 asset=asset_file_block["asset"]
