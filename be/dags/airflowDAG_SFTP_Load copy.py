@@ -16,7 +16,7 @@ import paramiko
 default_args = {
     'owner': 'airflow',
     'start_date': datetime(2021, 1, 1),
-    'email': ['sahilg@argtechnologies.in'],
+    'email': ['guptasahil2810@gmail.com'],
     'email_on_failure': True,
 }
 
@@ -30,7 +30,7 @@ def send_failure_status_email(context):
            f"Task execution date: {context['execution_date']}\n" \
            f"Log URL: {task_instance.log_url}\n\n"
 
-    to_email = "sahilg@argtechnologies.in"  # Replace with the recipient email address
+    to_email = "guptasahil2810@gmail.com"  # Replace with the recipient email address
     send_email(to=to_email, subject=subject, html_content=body)
 
 # Helper function to check if SFTP file exists
