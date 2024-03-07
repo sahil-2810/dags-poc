@@ -145,7 +145,7 @@ with DAG(
         # TODO: Move to variables.  Also secure.
         if(tsdb_master):
             sentinel = Sentinel(sentinels=[(tsdb_host,tsdb_port),
-                ],socket_timeout=10,password=tsdb_pwd)
+                ],socket_timeout=10,sentinel_kwargs={'password': tsdb_pwd}password=tsdb_pwd)
             # sentinel = Sentinel(sentinels=[('redis-service', 26379),
             #       ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
             conn = sentinel.master_for('mymaster')
