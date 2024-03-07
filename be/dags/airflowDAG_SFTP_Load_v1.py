@@ -144,10 +144,10 @@ with DAG(
         print(f"Redis Python API version: {redis.__version__}")
         # TODO: Move to variables.  Also secure.
         if(tsdb_master):
-            # sentinel = Sentinel(sentinels=[(tsdb_host,tsdb_port),
-            #     ],socket_timeout=10,password=tsdb_pwd)
-            sentinel = Sentinel(sentinels=[('redis-service', 26379),
-                  ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+            sentinel = Sentinel(sentinels=[(tsdb_host,tsdb_port),
+                ],socket_timeout=10,password=tsdb_pwd)
+            # sentinel = Sentinel(sentinels=[('redis-service', 26379),
+            #       ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
             conn = sentinel.master_for('mymaster')
         else:
             conn = redis.Redis(tsdb_host,tsdb_port,password=tsdb_pwd)
@@ -231,7 +231,9 @@ with DAG(
 
     # Main flow
     tdsb_host_parts=Variable.get("tsdb_host").split(":")
+    print("######TSDB_HOST###########",tdsb_host_parts)
     tsdb_host=tdsb_host_parts[0]
+    print("######TSDB_HOST###########",tsdb_host)
     tsdb_port=int(tdsb_host_parts[1])
     tsdb_pwd=None
     try:
