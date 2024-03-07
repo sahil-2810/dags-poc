@@ -138,7 +138,7 @@ with DAG(
         conn = sentinel.master_for('mymaster')
         #Discover Slaves
         slave = sentinel.slave_for('mymaster', socket_timeout=10)
-        #conn=redis.Redis(host="redis-service", port=6379,password='test@123')
+        #conn=redis.Redis(host="redis-service", port=6379,password='test@123') #
         key_types={}              
         for asset_files in file_block:
             asset=asset_files['asset']
