@@ -34,7 +34,7 @@ max_files_per_asset=int(Variable.get("max_files_per_asset"))
 
 # Schedule every n minutes
 with DAG(
-    dag_id="sftp_etl",
+    dag_id="sftp_etl_v1",
     schedule_interval=f"*/{poll_period} * * * *",
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
