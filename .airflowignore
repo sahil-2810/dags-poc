@@ -1,2 +1,3 @@
 be/brompton/.*
 be/dags/airflowDAG_SFTP_Load.py
+be/dags/airflowDAG_RedisTest.py
