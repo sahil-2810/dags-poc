@@ -35,7 +35,7 @@ def get_asset_meas_from_db(asset_tags: Dict[int, List[str]], hook) -> Dict[int,D
                         when position('\\' in m.tag)>0 then right(m.tag,position('\\' in reverse(m.tag))-1) 
                         else m.tag 
                     end in ({short_tags_str})
-                    and m.enabled=true
+                    and coalesce(m.enabled,'true')<>false
                 join data_type d on m.data_type=d.id"""
     asset_meas={}
     # connect to db
@@ -81,14 +81,20 @@ def get_asset_meas_from_db(asset_tags: Dict[int, List[str]], hook) -> Dict[int,D
 def get_maps_from_db(file_pattern,assets,hook):
     asset_ids=[]
     for block in assets:
-        if(not(block["asset"] in asset_ids)):  
-            asset_ids.append(block["asset"])
+        try:
+            id = int(block["asset"])
+            if(not(block["asset"] in asset_ids)):
+                asset_ids.append(block['asset'])
+        except: # if id cannot be converted to int then the file is misconfigured
+            pass
     asset_ids_str=",".join(asset_ids)
     asset_data_qry=f"""select a.id asset,me.id measurement,m.column from 
 	                    asset a 
                     join etl_file_column_map m on m.asset_type=a.a_type and a.id in ({asset_ids_str}) and file_pattern='{file_pattern}'
                     join asset_measurement am on am.asset=a.id
-                    join measurement me on me.id=am.measurement and me.tag like '%' || m.tag and me.enabled=true"""
+                    join measurement me on me.id=am.measurement and 
+					((me.tag like '%\\\\' || m.tag and position('\\' in me.tag)>0) or (me.tag like '%' || m.tag and position('\\' in me.tag)=0))    
+					and coalesce(me.enabled,'true')<>false"""
 
     maps = {} # {asset_id-->symbol-->meas_id}
     # connect to db
@@ -104,6 +110,10 @@ def get_maps_from_db(file_pattern,assets,hook):
             if(not(row[0] in maps)):
                 maps[row[0]]={}
             maps[row[0]][row[2]]=row[1]
+        # Make sure a mapping was returned else return an empty dictionary !!!
+        for id in asset_ids:
+            if(not(id in maps)):
+                maps[id]={}  # empty dictionary
     except Exception as e:
         raise(e)
     finally:
