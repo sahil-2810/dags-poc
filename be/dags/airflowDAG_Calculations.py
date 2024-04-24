@@ -7,6 +7,7 @@ import requests
 import redis
 import sys
 from redis.commands.timeseries.info import TSInfo
+from redis.sentinel import Sentinel
 from typing import List,Any
 from airflow import DAG
 from airflow.decorators import task
@@ -18,8 +19,33 @@ from be.brompton.TSDBUtils import *
 
 MAXBACKFILL=30*24*3600*1000  # 30 days
 hook = PostgresHook('datalogger_postgres')
+# tdsb_host_parts = Variable.get("tsdb_host").split(":")
 tdsb_host_parts = Variable.get("tsdb_host").split(":")
-conn = redis.Redis(tdsb_host_parts[0], int(tdsb_host_parts[1]))
+print("######TSDB_HOST###########", tdsb_host_parts)
+tsdb_host = tdsb_host_parts[0]
+print("######TSDB_HOST###########", tsdb_host)
+tsdb_port = int(tdsb_host_parts[1])
+tsdb_pwd = None
+try:
+    tsdb_pwd = Variable.get("tsdb_password")
+except:
+    pass
+tsdb_master = None
+try:
+    tsdb_master = Variable.get("tsdb_master")
+except:
+    pass
+print("######TSDB_MASTER###########", tsdb_master)
+# conn = redis.Redis(tdsb_host_parts[0], int(tdsb_host_parts[1]))
+if (tsdb_master):
+            sentinel = Sentinel(sentinels=[(tsdb_host, tsdb_port),
+                                           ], socket_timeout=10, sentinel_kwargs={'password': tsdb_pwd},
+                                password=tsdb_pwd)
+            # sentinel = Sentinel(sentinels=[('redis-service', 26379),
+            #       ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+            conn = sentinel.master_for(tsdb_master)
+else:
+    conn = redis.Redis(tsdb_host, tsdb_port, password=tsdb_pwd)
 api_url=Variable.get("api_url")
 
 with DAG(
