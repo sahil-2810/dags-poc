@@ -6,6 +6,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from be.brompton.WorkerAllocator import allocate
 from be.brompton.WorkerAllocator import AllocateCandidate
 from be.brompton.RateBackfill import *
+from redis.sentinel import Sentinel
 
 # Schedule every n minutes
 with DAG(
@@ -46,7 +47,33 @@ with DAG(
         fill_rate_gaps(conn,gaps_list_for_worker)
 
     # Main flow
-    tdsb_host_parts=Variable.get("tsdb_host").split(":")
-    conn=redis.Redis(tdsb_host_parts[0],int(tdsb_host_parts[1]))
+    # tdsb_host_parts=Variable.get("tsdb_host").split(":")
+    # conn=redis.Redis(tdsb_host_parts[0],int(tdsb_host_parts[1]))
+    # Main flow
+    tdsb_host_parts = Variable.get("tsdb_host").split(":")
+    print("######TSDB_HOST###########", tdsb_host_parts)
+    tsdb_host = tdsb_host_parts[0]
+    print("######TSDB_HOST###########", tsdb_host)
+    tsdb_port = int(tdsb_host_parts[1])
+    tsdb_pwd = None
+    try:
+        tsdb_pwd = Variable.get("tsdb_password")
+    except:
+        pass
+    tsdb_master = None
+    try:
+        tsdb_master = Variable.get("tsdb_master")
+    except:
+        pass
+    print("######TSDB_MASTER###########", tsdb_master)
+    if (tsdb_master):
+            sentinel = Sentinel(sentinels=[(tsdb_host, tsdb_port),
+                                           ], socket_timeout=10, sentinel_kwargs={'password': tsdb_pwd},
+                                password=tsdb_pwd)
+            # sentinel = Sentinel(sentinels=[('redis-service', 26379),
+            #       ],socket_timeout=10,sentinel_kwargs={'password': 'test@123'},password='test@123')
+            conn = sentinel.master_for(tsdb_master)
+    else:
+        conn = redis.Redis(tsdb_host, tsdb_port, password=tsdb_pwd)
     latest_gaps = allocate_workers()
     fill_gaps.expand(gaps_list_for_worker=latest_gaps)
