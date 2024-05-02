@@ -31,8 +31,11 @@ def sftp_exists(sftp, path):
         sftp.stat(path)
         return True
     except FileNotFoundError:
+        print("filePath ",path)
         return False
-
+    except IOError:
+        print("filePath ",path)
+        return False
 
 poll_period = int(Variable.get("sftp_poll"))
 max_workers = int(Variable.get("max_workers"))
